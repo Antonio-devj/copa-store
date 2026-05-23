@@ -41,13 +41,18 @@
                             <div class="ml-6 flex-grow">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $item['country'] }}</span>
                                 <h2 class="text-base font-bold uppercase tracking-tight text-black">{{ $item['name'] }}</h2>
-                                <p class="text-sm text-gray-500 mt-1">Quantidade: {{ $item['quantity'] }}</p>
-                                
-                                <form action="{{ route('cart.remove', $id) }}" method="POST" class="mt-2">
-                                    @csrf
-                                    <button type="submit" class="text-xs font-bold uppercase tracking-widest text-red-600 hover:underline">Remover</button>
-                                </form>
+    
+                                <div class="flex gap-4 text-xs font-bold uppercase tracking-wide text-gray-500 mt-1">
+                                    <span>Opção: <span class="text-black">{{ $item['size'] }}</span></span>
+                                    <span>Qtd: <span class="text-black">{{ $item['quantity'] }}</span></span>
+                                </div>
                             </div>
+
+    <form action="{{ route('cart.remove', $id) }}" method="POST" class="mt-2">
+        @csrf
+        <button type="submit" class="text-xs font-bold uppercase tracking-widest text-red-600 hover:underline">Remover</button>
+    </form>
+</div>
 
                             <div class="text-right">
                                 <span class="text-base font-black text-black">R$ {{ number_format($item['price'] * $item['quantity'], 2, ',', '.') }}</span>

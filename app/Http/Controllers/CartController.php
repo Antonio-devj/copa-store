@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    // Exibir a página do carrinho
     public function index()
     {
         $cart = session()->get('cart', []);
@@ -20,21 +19,33 @@ class CartController extends Controller
         return view('cart', compact('cart', 'total'));
     }
 
-    // Adicionar item ao carrinho
-    public function add($id)
+    public function add(Request $request, $id)
     {
+        // Valida se veio a quantidade e o tamanho
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'size' => 'required|string'
+        ]);
+
         $product = Product::with('country')->findOrFail($id);
         $cart = session()->get('cart', []);
+        
+        $size = $request->size;
+        $quantity = $request->quantity;
 
-        // Se o produto já está no carrinho, só aumenta a quantidade
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+        // Criamos uma chave única combinando o ID do produto e o tamanho escolhido
+        $cartKey = $id . '_' . $size;
+
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] += $quantity;
         } else {
-            // Se não está, adiciona as informações básicas dele
-            $cart[$id] = [
+            $cart[$cartKey] = [
+                "id" => $product->id,
                 "name" => $product->name,
-                "quantity" => 1,
+                "quantity" => $quantity,
                 "price" => $product->price,
+                "size" => $size,
+                "category" => $product->category,
                 "country" => $product->country->name,
                 "image" => $product->image
             ];
@@ -44,7 +55,6 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Produto adicionado ao carrinho!');
     }
 
-    // Remover item do carrinho
     public function remove($id)
     {
         $cart = session()->get('cart', []);
