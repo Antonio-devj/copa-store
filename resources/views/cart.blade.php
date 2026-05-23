@@ -74,9 +74,18 @@
                         <span>R$ {{ number_format($total, 2, ',', '.') }}</span>
                     </div>
 
-                    <button class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-900 transition-colors">
+                    @auth
+                <form action="{{ route('cart.checkout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-900 transition-colors text-center block">
                         Finalizar Compra
                     </button>
+                </form>
+                    @else
+                    <a href="{{ route('login') }}" class="w-full bg-gray-200 text-black py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-300 transition-colors text-center block">
+                         Faça Login para Finalizar
+                    </a>
+                    @endauth
                 </div>
 
             </div>

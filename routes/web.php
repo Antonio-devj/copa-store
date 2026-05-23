@@ -58,4 +58,9 @@ Route::get('/carrinho', [CartController::class, 'index'])->name('cart.index');
 Route::post('/carrinho/add/{id}', [CartController::class, 'add'])->name('cart.add');
 Route::post('/carrinho/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
+// Rotas Finalização de Compra - Protegidas por Login
+Route::post('/carrinho/finalizar', [CartController::class, 'checkout'])
+    ->middleware('auth')
+    ->name('cart.checkout');
+
 require __DIR__.'/auth.php';

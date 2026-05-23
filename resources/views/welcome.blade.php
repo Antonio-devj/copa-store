@@ -15,8 +15,8 @@
             </a>
             <div class="flex items-center gap-8 text-sm font-bold tracking-widest uppercase">
                 @auth
-                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : url('/dashboard') }}" class="hover:text-gray-500 transition-colors">
-                        Painel
+                    <a href="{{ url('/dashboard') }}" class="hover:text-gray-500 transition-colors">
+                        Painel ({{ Auth::user()->name }})
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="hover:text-gray-500 transition-colors">Entrar</a>
@@ -44,8 +44,8 @@
                     </span>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-300 text-sm">
-                    <div><p>{{ $selectedCountry->history }}</p></div>
-                    <div><p>{{ $selectedCountry->journey }}</p></div>
+                    <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">História</h3><p>{{ $selectedCountry->history }}</p></div>
+                    <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">Rumo a 2026</h3><p>{{ $selectedCountry->journey }}</p></div>
                 </div>
             </div>
         </header>
@@ -66,7 +66,7 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             @forelse($products as $product)
-                <div class="flex flex-col border border-gray-100 p-2 hover:shadow-lg transition-shadow">
+                <div class="flex flex-col border border-gray-100 p-2 hover:shadow-lg transition-shadow bg-white">
                     
                     <div class="bg-[#f6f6f6] aspect-square flex items-center justify-center overflow-hidden mb-4">
                         @if($product->image)
@@ -96,7 +96,6 @@
                                             <option value="40" selected>40</option>
                                             <option value="41">41</option>
                                             <option value="42">42</option>
-                                            <option value="43">43</option>
                                         @else
                                             <option value="P">P</option>
                                             <option value="M" selected>M</option>

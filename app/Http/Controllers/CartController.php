@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class CartController extends Controller
 {
@@ -66,4 +68,48 @@ class CartController extends Controller
 
         return redirect()->route('cart.index')->with('success', 'Produto removido!');
     }
+
+
+public function checkout(Request $request)
+{
+    $cart = session()->get('cart', []);
+
+    if (empty($cart)) {
+        return redirect()->route('cart.index')->with('error', 'Seu carrinho está vazio.');
+    }
+
+    $total = 0;
+    foreach ($cart as $item) {
+        $total += $item['price'] * $item['quantity'];
+    }
+
+    // 1. Cria o registro do Pedido Principal
+    $order = Order::create([
+        'user_id' => auth()->id(),
+        'total_price' => $total,
+        'status' => 'processando'
+    ]);
+
+    // 2. Transfere os itens do carrinho para o banco de dados
+    foreach ($cart as $idWithSize => $item) {
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $item['id'],
+            'quantity' => $item['quantity'],
+            'price' => $item['price'],
+            'size' => $item['size'],
+        ]);
+
+        // [Opcional] Abater do estoque do produto real
+        $product = \App\Models\Product::find($item['id']);
+        if ($product) {
+            $product->decrement('stock', $item['quantity']);
+        }
+    }
+
+    // 3. Limpa o carrinho da sessão
+    session()->forget('cart');
+
+    return view('order-success', compact('order'));
+}
 }
