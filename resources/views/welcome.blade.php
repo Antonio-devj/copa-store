@@ -10,16 +10,22 @@
 
     <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            
             <a href="{{ route('home') }}" class="text-3xl font-black tracking-tighter uppercase">
                 Copa Store.
             </a>
+            
             <div class="flex items-center gap-8 text-sm font-bold tracking-widest uppercase">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="hover:text-gray-500 transition-colors">
+                    <a href="{{ url('/dashboard') }}" class="hover:text-gray-500 transition-colors text-black">
                         Painel ({{ Auth::user()->name }})
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="hover:text-gray-500 transition-colors">Entrar</a>
+                    
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="text-gray-400 hover:text-black transition-colors">Criar Conta</a>
+                    @endif
                 @endauth
 
                 <a href="{{ route('cart.index') }}" class="relative flex items-center p-2 hover:text-gray-500 transition-colors" title="Ver meu carrinho">
@@ -34,7 +40,7 @@
         </div>
     </nav>
 
-    @if($selectedCountry)
+    @if(isset($selectedCountry) && $selectedCountry)
         <header class="bg-black text-white py-16">
             <div class="max-w-7xl mx-auto px-4">
                 <h1 class="text-6xl font-black uppercase tracking-tighter mb-4">{{ $selectedCountry->name }}</h1>
@@ -45,7 +51,7 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-300 text-sm">
                     <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">História</h3><p>{{ $selectedCountry->history }}</p></div>
-                    <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">Rumo a 2026</h3><p>{{ $selectedCountry->journey }}</p></div>
+                    <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">Rumo ao Título</h3><p>{{ $selectedCountry->journey }}</p></div>
                 </div>
             </div>
         </header>
@@ -118,7 +124,7 @@
                     </div>
                 </div>
             @empty
-                <p class="col-span-full text-center text-gray-400 py-12 uppercase font-bold tracking-widest text-xs">Sem produtos.</p>
+                <p class="col-span-full text-center text-gray-400 py-12 uppercase font-bold tracking-widest text-xs">Sem produtos disponíveis no momento.</p>
             @endforelse
         </div>
     </main>

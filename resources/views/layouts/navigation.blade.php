@@ -1,6 +1,7 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
+            
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="text-2xl font-black tracking-tighter uppercase text-black">
@@ -13,7 +14,7 @@
                         ← Ver Vitrine de Produtos
                     </a>
 
-                    @if(Auth::user()->isAdmin())
+                    @if(Auth::user()->role === 'admin')
                         <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold uppercase tracking-widest {{ request()->routeIs('admin.orders.index') ? 'text-black border-b-2 border-black py-5' : 'text-gray-500 hover:text-black' }} transition-colors">
                             📦 Gerenciar Pedidos
                         </a>
@@ -33,6 +34,7 @@
                     </button>
                 </form>
             </div>
+            
         </div>
     </div>
 </nav>

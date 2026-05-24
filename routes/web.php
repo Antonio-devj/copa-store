@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CartController;
+use App\Models\Order;
 
 Route::get('/', function (Request $request) {
     $countries = Country::all();
@@ -27,8 +28,10 @@ Route::get('/', function (Request $request) {
     return view('welcome', compact('products', 'countries', 'selectedCountry'));
 })->name('home');
 
+// Rota do Dashboard inteligente, que alimenta o histórico de pedidos do usuário atual
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $myOrders = Order::where('user_id', auth()->id())->latest()->get();
+    return view('dashboard', compact('myOrders'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

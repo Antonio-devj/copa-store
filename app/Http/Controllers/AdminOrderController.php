@@ -10,18 +10,16 @@ class AdminOrderController extends Controller
     // Listar todos os pedidos da loja
     public function index()
     {
-        // Bloqueio manual de segurança caso tentem burlar pela URL
         if (!auth()->user()->isAdmin()) {
             abort(403, 'Acesso negado.');
         }
 
-        // Puxa os pedidos trazendo junto os dados do usuário que comprou
         $orders = Order::with('user')->latest()->get();
 
         return view('admin.orders', compact('orders'));
     }
 
-    // Atualizar o status do pedido (ex: Processando -> Enviado)
+    // Atualizar o status do pedido de forma explícita e infalível
     public function updateStatus(Request $request, $id)
     {
         if (!auth()->user()->isAdmin()) {
@@ -32,11 +30,13 @@ class AdminOrderController extends Controller
             'status' => 'required|string|in:processando,enviado,entregue,cancelado'
         ]);
 
+        // Busca o pedido
         $order = Order::findOrFail($id);
-        $order->update([
-            'status' => $request->status
-        ]);
+        
+        // Atribuição direta (ignora qualquer ausência do fillable no Model)
+        $order->status = $request->status;
+        $order->save(); 
 
-        return redirect()->back()->with('success', 'Status do pedido #' . $id . ' atualizado com sucesso!');
+        return redirect()->back()->with('success', 'Status do pedido #' . $id . ' atualizado para ' . strtoupper($request->status) . '!');
     }
 }
