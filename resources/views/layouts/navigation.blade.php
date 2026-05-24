@@ -12,6 +12,12 @@
                     <a href="{{ route('home') }}" class="text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-black transition-colors">
                         ← Ver Vitrine de Produtos
                     </a>
+
+                    @if(Auth::user()->isAdmin())
+                        <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold uppercase tracking-widest {{ request()->routeIs('admin.orders.index') ? 'text-black border-b-2 border-black py-5' : 'text-gray-500 hover:text-black' }} transition-colors">
+                            📦 Gerenciar Pedidos
+                        </a>
+                    @endif
                 </div>
             </div>
 

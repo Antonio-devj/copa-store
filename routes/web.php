@@ -63,4 +63,12 @@ Route::post('/carrinho/finalizar', [CartController::class, 'checkout'])
     ->middleware('auth')
     ->name('cart.checkout');
 
+    use App\Http\Controllers\AdminOrderController;
+
+// Rotas exclusivas para o Administrador logado
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/pedidos', [AdminOrderController::class, 'index'])->name('admin.orders.index');
+    Route::patch('/admin/pedidos/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update');
+});
+
 require __DIR__.'/auth.php';
