@@ -15,10 +15,13 @@
                     </a>
 
                     @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold uppercase tracking-widest {{ request()->routeIs('admin.orders.index') ? 'text-black border-b-2 border-black py-5' : 'text-gray-500 hover:text-black' }} transition-colors">
-                            📦 Gerenciar Pedidos
-                        </a>
-                    @endif
+    <a href="{{ route('admin.orders.index') }}" class="text-xs font-bold uppercase tracking-widest {{ request()->routeIs('admin.orders.index') ? 'text-black border-b-2 border-black py-5' : 'text-gray-500 hover:text-black' }} transition-colors">
+        📦 Gerenciar Pedidos
+    </a>
+    <a href="{{ route('admin.products.index') }}" class="text-xs font-bold uppercase tracking-widest {{ request()->routeIs('admin.products.index') ? 'text-black border-b-2 border-black py-5' : 'text-gray-500 hover:text-black' }} transition-colors">
+        👕 Gerenciar Produtos
+    </a>
+@endif
                 </div>
             </div>
 

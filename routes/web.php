@@ -8,6 +8,8 @@ use App\Models\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CartController;
 use App\Models\Order;
+use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminOrderController;
 
 Route::get('/', function (Request $request) {
     $countries = Country::all();
@@ -66,12 +68,19 @@ Route::post('/carrinho/finalizar', [CartController::class, 'checkout'])
     ->middleware('auth')
     ->name('cart.checkout');
 
-    use App\Http\Controllers\AdminOrderController;
-
 // Rotas exclusivas para o Administrador logado
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
+
+    // Rotas de Pedidos do Admin
     Route::get('/admin/pedidos', [AdminOrderController::class, 'index'])->name('admin.orders.index');
     Route::patch('/admin/pedidos/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update');
-});
 
+    // Rotas de Produtos do Admin
+    Route::get('/admin/produtos', [AdminProductController::class, 'index'])->name('admin.products.index');
+    Route::get('/admin/produtos/novo', [AdminProductController::class, 'create'])->name('admin.products.create');
+    Route::post('/admin/produtos', [AdminProductController::class, 'store'])->name('admin.products.store');
+    Route::get('/admin/produtos/{id}/editar', [AdminProductController::class, 'edit'])->name('admin.products.edit');
+    Route::put('/admin/produtos/{id}', [AdminProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/admin/produtos/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
+});
 require __DIR__.'/auth.php';
