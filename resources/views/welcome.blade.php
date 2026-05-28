@@ -17,6 +17,24 @@
             
             <div class="flex items-center gap-8 text-sm font-bold tracking-widest uppercase">
                 @auth
+                    @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'vendedor')
+                        @if(empty(Auth::user()->seller_status))
+                            <a href="{{ route('seller.register.form') }}" class="hover:text-gray-500 transition-colors text-black">
+                                💰 Quero Vender
+                            </a>
+                        @elseif(Auth::user()->seller_status === 'pendente')
+                            <span class="text-xs font-bold text-amber-500 normal-case cursor-help flex items-center gap-1" title="Em análise pela administração.">
+                                ⏳ Em Análise
+                            </span>
+                        @endif
+                    @endif
+
+                    @if(Auth::user()->role === 'vendedor')
+                        <span class="text-xs font-bold text-blue-600 normal-case bg-blue-50 px-2 py-1 rounded">
+                            ✓ Parceiro Ativo
+                        </span>
+                    @endif
+                    
                     <a href="{{ url('/dashboard') }}" class="hover:text-gray-500 transition-colors text-black">
                         Painel ({{ Auth::user()->name }})
                     </a>
@@ -50,8 +68,14 @@
                     </span>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-300 text-sm">
-                    <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">História</h3><p>{{ $selectedCountry->history }}</p></div>
-                    <div><h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">Rumo ao Título</h3><p>{{ $selectedCountry->journey }}</p></div>
+                    <div>
+                        <h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">História</h3>
+                        <p class="leading-relaxed">{{ $selectedCountry->history }}</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold uppercase text-white tracking-widest mb-2">Rumo ao Título</h3>
+                        <p class="leading-relaxed">{{ $selectedCountry->journey }}</p>
+                    </div>
                 </div>
             </div>
         </header>
@@ -64,9 +88,9 @@
 
     <main class="max-w-7xl mx-auto px-4 py-12">
         <div class="border-b border-gray-200 mb-12 flex gap-8 overflow-x-auto text-sm font-bold uppercase tracking-widest">
-            <a href="{{ route('home') }}" class="py-4 {{ !request('pais') ? 'border-b-2 border-black text-black' : 'text-gray-400' }}">Todos</a>
+            <a href="{{ route('home') }}" class="py-4 whitespace-nowrap {{ !request('pais') ? 'border-b-2 border-black text-black' : 'text-gray-400' }}">Todos</a>
             @foreach($countries as $country)
-                <a href="{{ route('home', ['pais' => $country->id]) }}" class="py-4 {{ request('pais') == $country->id ? 'border-b-2 border-black text-black' : 'text-gray-400' }}">{{ $country->name }}</a>
+                <a href="{{ route('home', ['pais' => $country->id]) }}" class="py-4 whitespace-nowrap {{ request('pais') == $country->id ? 'border-b-2 border-black text-black' : 'text-gray-400' }}">{{ $country->name }}</a>
             @endforeach
         </div>
 

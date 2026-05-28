@@ -10,6 +10,7 @@ use App\Http\Controllers\CartController;
 use App\Models\Order;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\SellerRegisterController;
 
 Route::get('/', function (Request $request) {
     $countries = Country::all();
@@ -36,41 +37,40 @@ Route::get('/dashboard', function () {
     return view('dashboard', compact('myOrders'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+// ==========================================
+// ROTAS PARA USUÁRIOS LOGADOS (CLIENTES)
+// ==========================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Rotas de Inscrição de Vendedor (Agora no lugar certo e com o Controller correto!)
+    Route::get('/vendedor/cadastro', [SellerRegisterController::class, 'showForm'])->name('seller.register.form');
+    Route::post('/vendedor/cadastro', [SellerRegisterController::class, 'store'])->name('seller.register.store');
 });
 
 
-// Grupo de rotas do Vendedor Protegidas por Login e pelo nosso Middleware Admin
+// ==========================================
+// ROTAS EXCLUSIVAS PARA ADMIN LOGADO
+// ==========================================
+
+// Grupo 1: prefixo "admin."
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    
     // Rota principal do painel (Dashboard do admin)
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
-    // Rotas do CRUD de Produtos
+    // Rotas do CRUD de Produtos (Talvez possam ser unidas com as de baixo depois)
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    
 });
 
-// Rotas do Carrinho de Compras
-Route::get('/carrinho', [CartController::class, 'index'])->name('cart.index');
-Route::post('/carrinho/add/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/carrinho/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-
-// Rotas Finalização de Compra - Protegidas por Login
-Route::post('/carrinho/finalizar', [CartController::class, 'checkout'])
-    ->middleware('auth')
-    ->name('cart.checkout');
-
-// Rotas exclusivas para o Administrador logado
+// Grupo 2: Admin genérico
 Route::middleware(['auth', 'admin'])->group(function () {
-
     // Rotas de Pedidos do Admin
     Route::get('/admin/pedidos', [AdminOrderController::class, 'index'])->name('admin.orders.index');
     Route::patch('/admin/pedidos/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update');
@@ -83,4 +83,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/produtos/{id}', [AdminProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/produtos/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
 });
+
+
+// ==========================================
+// ROTAS DO CARRINHO DE COMPRAS
+// ==========================================
+Route::get('/carrinho', [CartController::class, 'index'])->name('cart.index');
+Route::post('/carrinho/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/carrinho/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Rotas Finalização de Compra - Protegidas por Login
+Route::post('/carrinho/finalizar', [CartController::class, 'checkout'])
+    ->middleware('auth')
+    ->name('cart.checkout');
+
 require __DIR__.'/auth.php';
