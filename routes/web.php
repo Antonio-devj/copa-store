@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\SellerRegisterController;
+use App\Http\Controllers\AdminSellerController;
 
 Route::get('/', function (Request $request) {
     $countries = Country::all();
@@ -82,6 +83,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/produtos/{id}/editar', [AdminProductController::class, 'edit'])->name('admin.products.edit');
     Route::put('/admin/produtos/{id}', [AdminProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/admin/produtos/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
+
+    // ROTAS DE GESTÃO DE VENDEDORES (Cole isto aqui)
+    Route::get('/admin/vendedores', [AdminSellerController::class, 'index'])->name('admin.sellers.index');
+    Route::patch('/admin/vendedores/{id}/aprovar', [AdminSellerController::class, 'approve'])->name('admin.sellers.approve');
+    Route::patch('/admin/vendedores/{id}/rejeitar', [AdminSellerController::class, 'reject'])->name('admin.sellers.reject');
 });
 
 
